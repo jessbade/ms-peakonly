@@ -202,7 +202,7 @@ def border2average_correction(borders, averaged_borders):
         for j, avg_border in enumerate(averaged_borders):
             overlap[i,j] = intersection(border[0], border[1], avg_border[0], avg_border[1])
 
-    mapping_matrix = np.zeros(overlap.shape, dtype=np.int)
+    mapping_matrix = np.zeros(overlap.shape, dtype=np.int_)
     mapping_matrix[overlap.argmax(axis=0), range(mapping_matrix.shape[1])] = 1
 
     corrected_borders = []
@@ -329,7 +329,7 @@ def border_correction(component, borders):
             for i, sample in enumerate(component.samples):
                 # to do: it would be better to have mapping from group to samples and numbers
                 if component.grouping[i] == label:
-                    mapping_matrix = np.zeros((len(scan_borders[sample]), len(averaged_borders)), dtype=np.int)
+                    mapping_matrix = np.zeros((len(scan_borders[sample]), len(averaged_borders)), dtype=np.int_)
                     for k, border in enumerate(scan_borders[sample]):
                         for j, avg_border in enumerate(averaged_borders):
                             mapping_matrix[k, j] += border_intersection(border, avg_border)
@@ -459,7 +459,11 @@ def build_features(component, borders, initial_group):
     """
     rtdiff = (component.rois[0].rt[1] - component.rois[0].rt[0])
     scandiff = (component.rois[0].scan[1] - component.rois[0].scan[0])
-    frequency = scandiff / rtdiff
+
+    try:
+        frequency = scandiff / rtdiff
+    except ZeroDivisionError:
+        frequency = 0
 
     features = []
     labels = np.unique(component.grouping)
@@ -567,7 +571,7 @@ def collapse_mzrtgroup(mzrtgroup, code):
 
     # to do: completely rewrite it
     # from similarity_values construct mapping matrix
-    mapping_matrix = np.eye(len(mzrtgroup), dtype=np.int)
+    mapping_matrix = np.eye(len(mzrtgroup), dtype=np.int_)
     for i, label in enumerate(unique_labels):
         for j, comp_label in enumerate(unique_labels[i + 1:]):
             submatrix = similarity_values[label2idx[label]][:, label2idx[comp_label]]
