@@ -3,7 +3,6 @@ import io
 import pandas as pd
 import numpy as np
 import torch
-import urllib
 
 from pathlib import Path as P
 
@@ -44,17 +43,7 @@ class PeakOnly():
         fn_rnn = path/'RecurrentCNN.pt'
 
         if not fn_clf.is_file():
-        # Classifier
-            url = 'https://getfile.dokpub.com/yandex/get/https://yadi.sk/d/rAhl2u7WeIUGYA'
-            urllib.request.urlretrieve(url, fn_clf)
-        # Segmentator
-        if not fn_seg.is_file():
-            url = 'https://getfile.dokpub.com/yandex/get/https://yadi.sk/d/9m5e3C0q0HKbuw'
-            urllib.request.urlretrieve(url, fn_seg)
-        # RecurrentCNN
-        if not fn_rnn.is_file():
-            url = 'https://getfile.dokpub.com/yandex/get/https://yadi.sk/d/1IrXRWDWhANqKw'
-            urllib.request.urlretrieve(url, fn_rnn)
+            raise IOError('must pass valid dir containing models')
 
     def as_mint_targets(self):
         return po_table_to_mint_peaklist(self.results)
